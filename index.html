@@ -1,0 +1,82 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Title</title>
+</head>
+
+<body>
+
+    <div id="buttonspace"></div>
+    <div id="images"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript">
+    
+    //variable array of strings of interests
+    var interest = ["reading","writing","dancing","singing","disney","marvel","gaming"];
+    //take array topics and create HTML buttons
+    for(i=0;i<interest.length;i++){
+        $("#buttonspace").append("<button class='interestbutton' id='"+interest[i]+"'>"+interest[i]+"</button>");
+    }
+    
+    var gifURL = "https://api.giphy.com/v1/gifs/search?q=";
+    var apikey = "&api_key=qeWva6FlhYNFKtNM8DHgKR8bGESddVbO&limit=10";
+   
+
+    $(".interestbutton").click(function(){
+        $("#images").empty();
+        var iden = this.id;
+        console.log(iden);
+        queryURL = gifURL.concat(iden,apikey);
+        console.log(queryURL);
+        $.ajax({
+        url: queryURL,
+        method: "GET"
+      })
+        .then(function(response) {
+            for(i=0;i<=10;i++){
+                var imageURL = response.data[i].images.original_still.url;
+                var gifImage = $("<img>");
+                gifImage.attr("src", imageURL);
+                gifImage.attr("alt", "gif");
+                gifImage.attr("class","gifstill");
+                gifImage.attr("motion",response.data[i].images.original.url);
+                gifImage.attr("still",imageURL);
+                gifImage.attr("moving", "still");
+                $("#images").prepend(gifImage);
+            }
+        });
+    })
+
+    $(document).on("click",".gifstill",function(){
+        console.log(this)
+        console.log($(this).attr('motion'));
+         if($(this).attr("moving") == "moving"){
+             console.log(this)
+            this.src = $(this).attr("still");
+            $(this).attr("moving", "still")
+            console.log(this.src)
+         }else{
+             console.log(this)
+            this.src = $(this).attr("motion");
+            $(this).attr("moving", "moving")
+            console.log(this.src)
+         }
+    })
+
+    //on button click, page places 10 static gifs
+    //when one of the gifs is clickd, animate gif. click again, stop
+    //under each gift, display its rating
+
+    //add topic button! page form to take a user input, on button click add input to the topics array, call a function that remakes all the buttons
+
+    // onclick
+    
+  </script>
+</body>
+
+</html>
